@@ -5,3 +5,4 @@ Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
 Flask-Cors==4.0.0
 shortuuid==1.0.11
+workalendar==17.0.0
