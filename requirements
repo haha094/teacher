@@ -1,0 +1,7 @@
+Flask==2.3.3
+Flask-Migrate==4.0.4
+flask-paginate==2023.10.8
+Flask-SQLAlchemy==3.0.5
+Flask-WTF==1.1.1
+Flask-Cors==4.0.0
+shortuuid==1.0.11
