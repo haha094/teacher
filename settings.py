@@ -11,7 +11,7 @@ class MySqlConfig(object):
     PORT = 3306
     USERNAME = "root"
     PASSWORD = "071428"
-    DATABASE = "sohu"
+    DATABASE = "teacher_attendance_system"
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT,
                                                                                    DATABASE)
     SQLALCHEMY_TRACK_MODIFICATIONS = True  # 动态追踪拦截

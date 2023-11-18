@@ -1,0 +1,29 @@
+//2023.11节假日信息
+[
+  {'time': '2023-11-04', 'remark': 'weekend'},
+  {'time': '2023-11-05', 'remark': 'weekend'},
+  {'time': '2023-11-11', 'remark': 'weekend'},
+  {'time': '2023-11-12', 'remark': 'weekend'},
+  {'time': '2023-11-18', 'remark': 'weekend'},
+  {'time': '2023-11-19', 'remark': 'weekend'},
+  {'time': '2023-11-25', 'remark': 'weekend'},
+  {'time': '2023-11-26', 'remark': 'weekend'}
+]
+
+////2023.10节假日信息
+[
+  {'time': '2023-10-01', 'remark': 'National Day'},
+  {'time': '2023-10-02', 'remark': 'National Day'},
+  {'time': '2023-10-03', 'remark': 'National Day'},
+  {'time': '2023-10-04', 'remark': 'National Day'},
+  {'time': '2023-10-05', 'remark': 'National Day'},
+  {'time': '2023-10-06', 'remark': 'National Day'},
+  {'time': '2023-10-07', 'remark': 'weekend'},
+  {'time': '2023-10-08', 'remark': 'weekend'},
+  {'time': '2023-10-14', 'remark': 'weekend'},
+  {'time': '2023-10-15', 'remark': 'weekend'},
+  {'time': '2023-10-21', 'remark': 'weekend'},
+  {'time': '2023-10-22', 'remark': 'weekend'},
+  {'time': '2023-10-28', 'remark': 'weekend'},
+  {'time': '2023-10-29', 'remark': 'weekend'}
+]
