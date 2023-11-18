@@ -1,5 +1,5 @@
 from extension import db
-from utils import getTimeStamp
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class UserModel(db.Model):
@@ -11,14 +11,23 @@ class UserModel(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False, comment='邮箱')
 
     def __str__(self):
-        return f"{self.uid}--{self.username}--{self.department_id}--{self.password_hash}--{self.email}"
+        return f"{self.uid}--{self.username}--{self.department_id}--{self.email}"
 
     def to_dict(self):
         return {
             'uid': self.uid,
             'username': self.username,
             'department_id': self.department_id,
-            'password_hash': self.password_hash,
             'email': self.email
         }
 
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)

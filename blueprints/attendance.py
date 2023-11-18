@@ -6,6 +6,7 @@ from utils import success, fail
 from workalendar.asia import China
 from dateutil.rrule import rrule, WEEKLY
 from datetime import datetime
+from flask_cors import cross_origin
 
 bp = Blueprint("attendance", __name__, url_prefix='/attendance')
 
