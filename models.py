@@ -31,3 +31,15 @@ class UserModel(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class DepartmentModel(db.Model):
+    __tablename__ = "department"
+    department_id = db.Column(db.String(20), primary_key=True, comment='部门编号')
+    name = db.Column(db.String(64), nullable=False, comment='部门名')
+
+    def to_dict(self):
+        return {
+            'department_id': self.department_id,
+            'name': self.name
+        }
