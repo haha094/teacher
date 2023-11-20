@@ -1,14 +1,20 @@
 from extension import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from shortuuid import uuid
 
 
 class UserModel(db.Model):
     __tablename__ = "user"
     uid = db.Column(db.String(20), primary_key=True, comment='工号')
     username = db.Column(db.String(64), nullable=False, comment='用户名')
-    department_id = db.Column(db.String(20), nullable=False, comment='部门编号')
     password_hash = db.Column(db.String(128), comment='密码')
     email = db.Column(db.String(120), unique=True, nullable=False, comment='邮箱')
+
+    # 定义用户与出勤信息的 一对多关系
+    attendances = db.relationship("AttendanceModel", backref='user', lazy=True)
+
+    # 外键 --》 部门与用户的一对多关系
+    department_id = db.Column(db.String(20), db.ForeignKey('department.department_id'), nullable=False, comment='部门编号')
 
     def __str__(self):
         return f"{self.uid}--{self.username}--{self.department_id}--{self.email}"
@@ -38,8 +44,35 @@ class DepartmentModel(db.Model):
     department_id = db.Column(db.String(20), primary_key=True, comment='部门编号')
     name = db.Column(db.String(64), nullable=False, comment='部门名')
 
+    # 定义部门与用户的一对多关系
+    users = db.relationship("UserModel", backref='department', lazy=True)
+
     def to_dict(self):
         return {
             'department_id': self.department_id,
             'name': self.name
+        }
+
+
+class AttendanceModel(db.Model):
+    __tablename__ = "attendance"
+    id = db.Column(db.String(50), primary_key=True, default=uuid, comment='出勤信息主键id')
+
+    time = db.Column(db.String(20), nullable=False, comment='归属月份')
+    work_cnt = db.Column(db.SmallInteger, nullable=False, comment='出勤天数')
+    work_days = db.Column(db.Text, nullable=False, comment='出勤日期列表')
+    memo = db.Column(db.Text, comment='备注信息')
+    status = db.Column(db.Boolean, nullable=False, comment='出勤信息是否提交')
+    department_id = db.Column(db.String(20), nullable=False, comment='归属部门编号')
+    # 外键 --》 用户与出勤信息一对多
+    uid = db.Column(db.String(20), db.ForeignKey('user.uid'), nullable=False, comment='归属用户id')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'time': self.time,
+            'work_cnt': self.work_cnt,
+            'work_days': self.work_days,
+            'memo': self.memo,
+            'status': self.status,
         }

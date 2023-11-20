@@ -27,3 +27,32 @@
   {'time': '2023-10-28', 'remark': 'weekend'},
   {'time': '2023-10-29', 'remark': 'weekend'}
 ]
+
+[parameters: {
+  'id': 'cfJD8kGvovSwxtDfdnSrkG',
+  'uid': '00002311',
+  'time': '2023-11',
+  'work_cnt': 5,
+  'work_days': '[{"time": "2023-10-7", "attendance": "workday"}, {"time": "2023-10-8", "attendance": "workday"}, {"time": "2023-10-9", "attendance": "workday"}, {"time": "2023-10-10", "attendance": "workday"}, {"time": "2023-10-11", "attendance": "workday"}]', 'memo': '[{"time": "2023-10-1", "attendance": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-10-2", "attendance": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-10-3", "a ... (172 characters truncated) ... 2023-10-6", "attendance": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-10-14", "attendance": "weekend"}, {"time": "2023-10-15", "attendance": "weekend"}]', 'status': 1}]
+
+[{"time": "2023-10-1", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-2", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-3", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-4", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-5", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-6", "attendance": "\u56fd\u5e86\u8282"}, {"time": "2023-10-14", "attendance": "weekend"}, {"time": "2023-10-15", "attendance": "weekend"}]
+
+
+{
+    "code": 200,
+    "data": {
+        "commitedList": [
+            {
+                "days": 5,
+                "holidays": "[{\"time\": \"2023-10-1\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-2\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-3\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-4\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-5\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-6\", \"attendance\": \"\国\庆\节\"}, {\"time\": \"2023-10-14\", \"attendance\": \"weekend\"}, {\"time\": \"2023-10-15\", \"attendance\": \"weekend\"}]",
+                "name": "刘天翔",
+                "uid": "00002311",
+                "workingDays": "[{\"time\": \"2023-10-7\", \"attendance\": \"workday\"}, {\"time\": \"2023-10-8\", \"attendance\": \"workday\"}, {\"time\": \"2023-10-9\", \"attendance\": \"workday\"}, {\"time\": \"2023-10-10\", \"attendance\": \"workday\"}, {\"time\": \"2023-10-11\", \"attendance\": \"workday\"}]"
+            }
+        ],
+        "department_id": "230"
+    },
+    "msg": "SUCCEED"
+}
+
+"holidays": "[{\"time\": \"2023-10-1\", \"attendance\": \"\国\庆\节\"}]

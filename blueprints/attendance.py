@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, request, jsonify
 
 from app import db
@@ -7,6 +9,8 @@ from workalendar.asia import China
 from dateutil.rrule import rrule, WEEKLY
 from datetime import datetime
 from flask_cors import cross_origin
+from models import AttendanceModel, UserModel, DepartmentModel
+from sqlalchemy import and_
 
 bp = Blueprint("attendance", __name__, url_prefix='/attendance')
 
@@ -35,6 +39,91 @@ def get_holidays():
     return success(message="SUCCEED", data=result)
 
 
+@bp.post('/commit/<uid>')
+def commit_attendance(uid):
+    user = get_user(uid)
+    if not user:
+        return fail("该工号的用户信息已不存在!")
+    else:
+        attendance_model = AttendanceModel()
+        attendance_model.uid = uid
+        param = request.get_json()
+        list = param.get('month_list')
+        '''
+        [{'time':'2023-10-21','remark':weekend},{'time':'2023-10-22','remark':'workday'},{},{},{}]
+        '''
+        # print(list)
+        cnt = 0
+        days = []
+        memo = []
+        for day in list:
+            if day.get('remark') == 'workday':
+                cnt += 1
+                days.append({'time': day.get('time'), 'attendance': day.get('remark')})
+            else:
+                memo.append({'time': day.get('time'), 'attendance': day.get('remark')})
+        attendance_model.work_days = json.dumps(days)
+        attendance_model.memo = json.dumps(memo)
+        attendance_model.work_cnt = cnt
+        year = datetime.now().year
+        month = datetime.now().month
+        attendance_model.time = f"{year}-{month}"
+        attendance_model.status = True
+        attendance_model.department_id = user.department_id
+        db.session.add(attendance_model)
+        db.session.commit()
+        return success("出勤信息提交成功!")
+
+
+@bp.get('/list')
+def get_attendance_list():
+    data = {}
+    param = request.get_json()
+    department_id = param.get('department_id')
+    time = param.get('time')
+    print(f"time:{time},department_id:{department_id}")
+    commited_list = []
+
+    data["department_id"] = department_id
+
+    list = AttendanceModel.query.filter(
+        and_(AttendanceModel.department_id == department_id, AttendanceModel.time == time)).all()
+    # 已提交用户
+    temp = []
+    for i in list:
+        if i.status:
+            user = get_user(i.uid)
+            if not user:
+                return fail("该工号的用户信息已不存在!")
+            else:
+                commited_list.append({
+                    'uid': user.uid,
+                    'name': user.username,
+                    'days': i.work_cnt,
+                    'workingDays': json.loads(i.work_days),
+                    'holidays': json.loads(i.memo)
+                })
+                temp.append(user)
+    data["commitedList"] = commited_list
+    # 未提交用户 ---》 添加用户名、工号
+    uncommited_list = []
+    department = DepartmentModel.query.filter_by(department_id=department_id).first()
+
+    temp_uids = [user.uid for user in temp]
+    print(department.users)
+    # department.users 中排除 temp 中的用户
+    uncommited_users = [user for user in department.users if user.uid not in temp_uids]
+    # print(uncommited_users)
+    for item in uncommited_users:
+        uncommited_list.append({
+            'uid': item.uid,
+            'name': item.username,
+            'days': 0
+        })
+    data['uncommitedList'] = uncommited_list
+    return success("SUCCEED", data)
+
+
 def find_weekends(year):
     # 开始日期和结束日期
     start_date = datetime(year, 1, 1)
@@ -49,3 +138,7 @@ def date_exists(check_date, lst):
         if d == check_date:
             return True
     return False
+
+
+def get_user(uid):
+    return UserModel.query.filter_by(uid=uid).first()
