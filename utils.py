@@ -67,23 +67,20 @@ def fail(message=None, data=None):
     )
 
 
-def ReLogin():
+def loginErr(message=None):
     return generateResult(
         code=401,
-        msg="令牌已过期,请重新登录!",
-        data=None
+        msg=message
     )
 
 
-def is_token_expired(token_str):
+def get_token_verificate_msg(token_str):
+    if not token_str:
+        return "请登录后重试!"
     user_token = UserTokenModel.query.filter_by(token=token_str).first()
     if user_token:
         now = datetime.now()
-        return now > user_token.expire_time
+        if not now > user_token.expire_time:
+            return "用户信息已过期,请重新登录!"
     else:
-        return False
-
-
-
-
-
+        return None

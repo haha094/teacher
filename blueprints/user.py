@@ -5,8 +5,8 @@ from flask_cors import cross_origin
 
 from app import db
 from models import UserModel, UserTokenModel
-from utils import success, fail, get_user_by_uid, get_user_by_token
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from utils import success, fail, get_user_by_uid, get_user_by_token, loginErr, get_token_verificate_msg
+from flask_jwt_extended import create_access_token
 
 bp = Blueprint("user", __name__, url_prefix='/user')
 
@@ -44,59 +44,57 @@ def login():
     # 用户信息不存在
     if not user:
         return fail("无此用户信息,请注册后重试!")
-    # 用户信息已存在
+    # 密码错误，登录失败
+    if not user.verify_password(password):
+        return fail("工号或密码错误,请重试!")
+    # 用户密码正确 => 登录成功
+    token_str = create_access_token(identity=uid)
+    # 该用户无token
+    if not user.user_token_ref:
+        user_token_model = UserTokenModel(uid=user.uid, token=token_str)
+        db.session.add(user_token_model)
+    # 有token =》 更新过期时间
     else:
-        # 用户密码正确 => 登录成功
-        if user.verify_password(password):
-            token_str = create_access_token(identity=uid)
-            # 该用户无token
-            if not user.user_token_ref:
-                user_token_model = UserTokenModel(uid=user.uid, token=token_str)
-                db.session.add(user_token_model)
-            # 有token =》 更新过期时间
-            else:
-                user_token = user.user_token_ref
-                # token已过期 =》 删掉原来的，添加一个新的
-                if is_token_expired(user_token.token):
-                    db.session.delete(user_token)
-                    user_token_model = UserTokenModel(uid=user.uid, token=token_str)
-                    db.session.add(user_token_model)
-                # token未过期 =》更新登录时间和过期时间
-                else:
-                    user_token.login_time = datetime.now()
-                    user_token.expire_time = datetime.now() + timedelta(days=3)
-            db.session.commit()
-            return success("SUCCEED", data=token_str)
-        # 密码错误，登录失败
-        else:
-            return fail("工号或密码错误,请重试!")
+        user_token = user.user_token_ref
+        # 更新登录时间和过期时间
+        user_token.login_time = datetime.now()
+        user_token.expire_time = datetime.now() + timedelta(days=3)
+        # token已过期 =》 更新token字符串
+        if user_token.expire_time > datetime.now():
+            user_token.token = token_str
+    db.session.commit()
+    return success("SUCCEED", data=token_str)
 
 
 @bp.get('/info')
+@cross_origin()
 def get_user_info():
     token_str = request.headers.get('token')
+    msg = get_token_verificate_msg(token_str)
+    if not msg:
+        return loginErr(msg)
     user = get_user_by_token(token_str)
-    if user:
-        data = user.to_dict()
-        return success("SUCCEED", data)
-    else:
+    if not user:
         return fail("账户信息不存在!")
+    data = user.to_dict()
+    return success("SUCCEED", data)
 
 
 @bp.put('/pwd/update')
+@cross_origin()
 def update_password():
     param = request.get_json()
     old_password = param.get('oldPassword')
     new_password = param.get('newPassword')
-
     token_str = request.headers.get('token')
+    msg = get_token_verificate_msg(token_str)
+    if not msg:
+        return loginErr(msg)
     user = get_user_by_token(token_str)
     if not user:
         return fail("账户信息不存在!")
-    else:
-        if not user.verify_password(old_password):
-            return fail("原密码错误，请重新输入!")
-        else:
-            user.password = new_password
-            db.session.commit()
-            return success("SUCCEED")
+    if not user.verify_password(old_password):
+        return fail("原密码错误，请重新输入!")
+    user.password = new_password
+    db.session.commit()
+    return success("SUCCEED")

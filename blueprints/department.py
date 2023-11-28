@@ -1,7 +1,6 @@
 from flask import Blueprint, request
 
-from app import db
-from utils import success, fail
+from utils import success, get_token_verificate_msg, loginErr
 from models import DepartmentModel
 from flask_cors import cross_origin
 
@@ -9,7 +8,12 @@ bp = Blueprint("department", __name__, url_prefix='/department')
 
 
 @bp.get('/list')
+@cross_origin()
 def get_department_list():
+    token_str = request.headers.get('token')
+    msg = get_token_verificate_msg(token_str)
+    if not msg:
+        return loginErr(msg)
     departments = DepartmentModel.query.all()
     result = []
     for d in departments:
