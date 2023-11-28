@@ -59,9 +59,9 @@ def commit_attendance(uid):
         for day in list:
             if day.get('remark') == 'workday':
                 cnt += 1
-                days.append({'time': day.get('time'), 'attendance': day.get('remark')})
+                days.append({'time': day.get('time'), 'remark': day.get('remark')})
             else:
-                memo.append({'time': day.get('time'), 'attendance': day.get('remark')})
+                memo.append({'time': day.get('time'), 'remark': day.get('remark')})
         attendance_model.work_days = json.dumps(days)
         attendance_model.memo = json.dumps(memo)
         attendance_model.work_cnt = cnt

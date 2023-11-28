@@ -7,9 +7,13 @@ from blueprints.attendance import bp as attendance_bp
 from blueprints.user import bp as user_bp
 from blueprints.department import bp as department_bp
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
+
 
 app = Flask(__name__)
 app.config.from_object(settings.MySqlConfig)
+app.config.from_object(settings.JwtConfig)
+jwt = JWTManager(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 cors.init_app(app)

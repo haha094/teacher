@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from extension import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from shortuuid import uuid
@@ -14,7 +16,10 @@ class UserModel(db.Model):
     attendances = db.relationship("AttendanceModel", backref='user', lazy=True)
 
     # 外键 --》 部门与用户的一对多关系
-    department_id = db.Column(db.String(20), db.ForeignKey('department.department_id'), nullable=False, comment='部门编号')
+    department_id = db.Column(db.String(20), db.ForeignKey('department.department_id'), nullable=False,
+                              comment='部门编号')
+    # 添加反向引用，表明是一个一对一关系
+    user_token_ref = db.relationship("UserTokenModel", back_populates="user", uselist=False)
 
     def __str__(self):
         return f"{self.uid}--{self.username}--{self.department_id}--{self.email}"
@@ -75,4 +80,23 @@ class AttendanceModel(db.Model):
             'work_days': self.work_days,
             'memo': self.memo,
             'status': self.status,
+        }
+
+
+class UserTokenModel(db.Model):
+    __tablename__ = 'user_token'
+    id = db.Column(db.String(50), primary_key=True, default=uuid)
+    token = db.Column(db.String(512), unique=True, nullable=False)
+    login_time = db.Column(db.DateTime, default=datetime.now, comment='用户登录时间')
+    expire_time = db.Column(db.DateTime, default=datetime.now() + timedelta(days=3), comment='token过期时间')
+    # 外键 关联用户模型
+    uid = db.Column(db.String(20), db.ForeignKey('user.uid'), nullable=False, comment='归属用户id')
+    # 添加反向引用属性，表示一对一关系
+    user = db.relationship("UserModel", back_populates="user_token_ref")
+
+    def to_dict(self):
+        return {
+            'token': self.token,
+            'create_time': self.create_time,
+            'expire_time': self.expire_time,
         }

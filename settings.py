@@ -1,5 +1,7 @@
 # mysql settings
-import logging
+from datetime import timedelta
+
+from utils import generate_secure_key
 
 
 class MySqlConfig(object):
@@ -19,4 +21,11 @@ class MySqlConfig(object):
     SQLALCHEMY_ECHO = False  # 日志级别：显示sql语句
     # SQLALCHEMY_ECHO = logging.ERROR  # 日志级别显示sql语句
 
+
 # WHITE_NAME_LIST = ["/api/login","/api/regist","/api/goods/type","/api/by/tag/goods"]
+
+class JwtConfig(object):
+    # 设置token过期时间为48小时后
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=48)
+    # 将秘钥更改为强密码
+    JWT_SECRET_KEY = generate_secure_key()
