@@ -6,20 +6,14 @@ import urllib.request
 import urllib.parse
 from models import UserModel, UserTokenModel
 
-import json
 import secrets
 import string
 from flask import jsonify
 
 
-# get current time stamp
-def getTimeStamp():
-    return time.localtime()
-
-
-# timeStamp to data
-def timeStampFormat(timeStamp):
-    return date.fromtimestamp(timeStamp).strftime("%Y.%m.%d")
+# 返回日志打印时的时间信息
+def nowDateTime():
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def get_user_by_uid(uid):
@@ -75,12 +69,20 @@ def loginErr(message=None):
 
 
 def get_token_verificate_msg(token_str):
+    # 无token字符串传入 => 未登录
     if not token_str:
         return "请登录后重试!"
+    # 根据token查找用户token信息
     user_token = UserTokenModel.query.filter_by(token=token_str).first()
+    # 用户token信息存在
     if user_token:
+        # 用户token信息已过期
         now = datetime.now()
         if not now > user_token.expire_time:
             return "用户信息已过期,请重新登录!"
+        # 用户token未过期
+        else:
+            return "OK"
+    # 用户token信息不存在
     else:
-        return None
+        return "请登录后重试!"

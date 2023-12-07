@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 
 from app import db
 from utils import success, fail, loginErr, get_user_by_token, get_token_verificate_msg, get_user_by_uid
@@ -18,6 +18,7 @@ bp = Blueprint("attendance", __name__, url_prefix='/attendance')
 @bp.get('/holidays')
 @cross_origin()
 def get_holidays():
+    current_app.logger.info(f"{request.method} {request.path} request executed...")
     year = datetime.now().year
     month = datetime.now().month
     cal = China()
@@ -37,19 +38,24 @@ def get_holidays():
         if flag:
             result.append({"time": holiday[0].strftime('%Y-%m-%d'), "remark": holiday[1]})
     # print(f"返回当月的节假日列表result={result}")
+    current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success(message="SUCCEED", data=result)
 
 
 @bp.post('/commit')
 @cross_origin()
 def commit_attendance():
+    current_app.logger.info(f"{request.method} {request.path} request executed...")
     token_str = request.headers.get('token')
     msg = get_token_verificate_msg(token_str)
-    if not msg:
+    if not msg == "OK":
+        current_app.logger.error(f"{request.method} ERROR in {request.path} : {msg}")
         return loginErr(msg)
     user = get_user_by_token(token_str)
     if not user:
-        return fail("该工号的用户信息已不存在!")
+        msg = "该工号的用户信息已不存在!"
+        current_app.logger.error(f"{request.method} ERROR in {request.path} : {msg}")
+        return fail(msg)
     attendance_model = AttendanceModel()
     attendance_model.uid = user.uid
     param = request.get_json()
@@ -77,21 +83,23 @@ def commit_attendance():
     attendance_model.department_id = user.department_id
     db.session.add(attendance_model)
     db.session.commit()
+    current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success("出勤信息提交成功!")
 
 
 @bp.get('/list')
 @cross_origin()
 def get_attendance_list():
+    current_app.logger.info(f"{request.method} {request.path} request executed...")
     token_str = request.headers.get('token')
     msg = get_token_verificate_msg(token_str)
-    if not msg:
+    if not msg == 'OK':
+        current_app.logger.error(f"{request.method} ERROR in {request.path} : {msg}")
         return loginErr(msg)
     data = {}
     param = request.get_json()
     department_id = param.get('department_id')
     time = param.get('time')
-    # print(f"time:{time},department_id:{department_id}")
     commited_list = []
     data["department_id"] = department_id
     list = AttendanceModel.query.filter(
@@ -102,6 +110,7 @@ def get_attendance_list():
         if i.status:
             user = get_user_by_uid(i.uid)
             if not user:
+                current_app.logger.error(f"{request.method} ERROR in {request.path} : 该工号的用户信息已不存在!")
                 return fail("该工号的用户信息已不存在!")
             else:
                 commited_list.append({
@@ -118,7 +127,6 @@ def get_attendance_list():
     department = DepartmentModel.query.filter_by(department_id=department_id).first()
 
     temp_uids = [user.uid for user in temp]
-    # print(department.users)
     # department.users 中排除 temp 中的用户
     uncommited_users = [user for user in department.users if user.uid not in temp_uids]
     # print(uncommited_users)
@@ -129,6 +137,7 @@ def get_attendance_list():
             'days': 0
         })
     data['uncommitedList'] = uncommited_list
+    current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success("SUCCEED", data)
 
 
@@ -148,3 +157,10 @@ def date_exists(check_date, lst):
     return False
 
 
+@bp.get('/haha/test')
+def example():
+    current_path = request.path
+    request_url = request.url
+    print(f"request_url={request_url}")
+    print(f"current_path={current_path}")
+    return "hahaha test"

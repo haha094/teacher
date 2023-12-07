@@ -1,3 +1,4 @@
+
 from flask import Flask
 
 import settings
@@ -9,14 +10,16 @@ from blueprints.department import bp as department_bp
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 
-
 app = Flask(__name__)
 app.config.from_object(settings.MySqlConfig)
 app.config.from_object(settings.JwtConfig)
+app.config.from_object(settings.LoggingConfig)
 jwt = JWTManager(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 cors.init_app(app)
+# 初始化日志配置
+settings.LoggingConfig.init_app(app)
 # 注册蓝图
 app.register_blueprint(attendance_bp)
 app.register_blueprint(user_bp)
