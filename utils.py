@@ -1,9 +1,6 @@
 import time
 from datetime import date, datetime
-
-import simplejson as json
-import urllib.request
-import urllib.parse
+from flask import current_app
 from models import UserModel, UserTokenModel
 
 import secrets
@@ -64,7 +61,8 @@ def fail(message=None, data=None):
 def loginErr(message=None):
     return generateResult(
         code=401,
-        msg=message
+        msg=message,
+        data=None
     )
 
 
@@ -74,11 +72,14 @@ def get_token_verificate_msg(token_str):
         return "请登录后重试!"
     # 根据token查找用户token信息
     user_token = UserTokenModel.query.filter_by(token=token_str).first()
+
     # 用户token信息存在
     if user_token:
         # 用户token信息已过期
         now = datetime.now()
-        if not now > user_token.expire_time:
+        # current_app.logger.debug(f"user_token.expire_time?{user_token.expire_time}")
+        # current_app.logger.debug(f"now > user_token.expire_time?{now > user_token.expire_time}")
+        if now > user_token.expire_time:
             return "用户信息已过期,请重新登录!"
         # 用户token未过期
         else:

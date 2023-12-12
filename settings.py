@@ -12,10 +12,18 @@ class MySqlConfig(object):
     # SECRET_KEY = "ltx_secret_key"  # session的啥东西
     # SQLALCHEMY_DATABASE_URI = "mysql+pymysql//{}:{}@{}:{}/{}" \
     #     .format(username="root", password="071428", host="127.0.0.1", port=3306, database="mall")
-    HOSTNAME = "127.0.0.1"
+    # windows主机
+    # HOSTNAME = "127.0.0.1"
+    # PORT = 3306
+    # USERNAME = "root"
+    # PASSWORD = "071428"
+    # DATABASE = "teacher_attendance_system"
+
+    # Ubuntu虚拟机
+    HOSTNAME = "10.21.150.132"
     PORT = 3306
-    USERNAME = "root"
-    PASSWORD = "071428"
+    USERNAME = "ltx"
+    PASSWORD = "123456"
     DATABASE = "teacher_attendance_system"
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT,
                                                                                    DATABASE)
