@@ -1,6 +1,6 @@
 
 from flask import Flask
-
+from flask_sslify import SSLify
 import settings
 from extension import db, cors
 # 引入蓝图
@@ -11,6 +11,9 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
+# 初始化 SSLify，并强制使用 HTTPS
+sslify = SSLify(app, permanent=True)
+
 app.config.from_object(settings.MySqlConfig)
 app.config.from_object(settings.JwtConfig)
 app.config.from_object(settings.LoggingConfig)
@@ -32,4 +35,4 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='10.21.150.132',port=5000,debug=True)

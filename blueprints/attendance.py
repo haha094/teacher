@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, request, current_app
 
-from app import db
+from extension import db
 from utils import success, fail, loginErr, get_user_by_token, get_token_verificate_msg, get_user_by_uid
 
 from workalendar.asia import China

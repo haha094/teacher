@@ -11,11 +11,11 @@ bp = Blueprint("department", __name__, url_prefix='/department')
 @cross_origin()
 def get_department_list():
     current_app.logger.info(f"{request.method} {request.path} request executed...")
-    token_str = request.headers.get('token')
-    msg = get_token_verificate_msg(token_str)
-    if not msg == 'OK':
-        current_app.logger.error(f"{request.method} ERROR in {request.path} : {msg}")
-        return loginErr(msg)
+    #token_str = request.headers.get('token')
+    #msg = get_token_verificate_msg(token_str)
+    #if not msg == 'OK':
+    #    current_app.logger.error(f"{request.method} ERROR in {request.path} : {msg}")
+    #    return loginErr(msg)
     departments = DepartmentModel.query.all()
     result = []
     for d in departments:

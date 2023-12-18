@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, current_app
 from flask_cors import cross_origin
 
-from app import db
+from extension import db
 from models import UserModel, UserTokenModel
 from utils import success, fail, get_user_by_uid, get_user_by_token, loginErr, get_token_verificate_msg,nowDateTime
 from flask_jwt_extended import create_access_token
