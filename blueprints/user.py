@@ -69,12 +69,12 @@ def login():
     # 有token =》 更新过期时间
     else:
         user_token = user.user_token_ref
+        # token已过期 =》 更新token字符串
+        if user_token.expire_time < datetime.now():
+            user_token.token = token_str
         # 更新登录时间和过期时间
         user_token.login_time = datetime.now()
         user_token.expire_time = datetime.now() + timedelta(days=3)
-        # token已过期 =》 更新token字符串
-        if user_token.expire_time > datetime.now():
-            user_token.token = token_str
     db.session.commit()
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success("SUCCEED", data=token_str)
