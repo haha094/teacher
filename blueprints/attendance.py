@@ -1,7 +1,7 @@
 import json
 
 from flask import Blueprint, request, current_app
-
+import requests
 from extension import db
 from utils import success, fail, loginErr, get_user_by_token, get_token_verificate_msg, get_user_by_uid
 
@@ -15,9 +15,9 @@ from sqlalchemy import and_
 bp = Blueprint("attendance", __name__, url_prefix='/attendance')
 
 
-@bp.get('/holidays')
+@bp.get('/abandon/holidays')
 @cross_origin()
-def get_holidays():
+def get_holidays_abandon():
     current_app.logger.info(f"{request.method} {request.path} request executed...")
     year = datetime.now().year
     month = datetime.now().month
@@ -38,6 +38,30 @@ def get_holidays():
         if flag:
             result.append({"time": holiday[0].strftime('%Y-%m-%d'), "remark": holiday[1]})
     # print(f"返回当月的节假日列表result={result}")
+    current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
+    return success(message="SUCCEED", data=result)
+
+
+@bp.get('/holidays')
+@cross_origin()
+def get_holidays():
+    current_app.logger.info(f"{request.method} {request.path} request executed...")
+    year = datetime.now().year
+    month = datetime.now().month
+
+    url = "https://www.mxnzp.com/api/holiday/list/month/{}{:02d}?ignoreHoliday=false&app_id=ridopeqfimyqpyrh&app_secret=18DaFPw83fxCWE2TB9gvnCEtLRXHcQoN".format(
+        year, month)
+
+    response = requests.get(url)
+    # 直接获取 JSON 数据
+    holidays_data = response.json()
+
+    holidays_list = holidays_data.get('data', [])
+
+    result = []
+    for hd in holidays_list:
+        if hd['typeDes'] != '工作日':
+            result.append({"time": hd['date'], "remark": hd['typeDes']})
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success(message="SUCCEED", data=result)
 
