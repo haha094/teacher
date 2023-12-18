@@ -76,8 +76,10 @@ def commit_attendance():
     attendance_model.work_days = json.dumps(days)
     attendance_model.memo = json.dumps(memo)
     attendance_model.work_cnt = cnt
-    year = datetime.now().year
-    month = datetime.now().month
+    # year = datetime.now().year
+    # month = datetime.now().month
+    year = list[0].get('time').split('-')[0]
+    month = list[0].get('time').split('-')[1]
     attendance_model.time = f"{year}-{month}"
     attendance_model.status = True
     attendance_model.department_id = user.department_id
@@ -87,7 +89,7 @@ def commit_attendance():
     return success("出勤信息提交成功!")
 
 
-@bp.get('/list')
+@bp.post('/list')
 @cross_origin()
 def get_attendance_list():
     current_app.logger.info(f"{request.method} {request.path} request executed...")
