@@ -62,19 +62,29 @@ def login():
         return fail(msg)
     # 用户密码正确 => 登录成功
     token_str = create_access_token(identity=uid)
-    # 该用户无token
-    if not user.user_token_ref:
-        user_token_model = UserTokenModel(uid=user.uid, token=token_str)
-        db.session.add(user_token_model)
-    # 有token =》 更新过期时间
-    else:
-        user_token = user.user_token_ref
-        # token已过期 =》 更新token字符串
-        if user_token.expire_time < datetime.now():
-            user_token.token = token_str
-        # 更新登录时间和过期时间
-        user_token.login_time = datetime.now()
-        user_token.expire_time = datetime.now() + timedelta(days=3)
+    # 用户有token
+    if user.user_token_ref:
+        db.session.delete(user.user_token_ref)
+    # 添加新token
+    user_token_model = UserTokenModel(uid=user.uid, token=token_str)
+    db.session.add(user_token_model)
+    # # 该用户无token
+    # if not user.user_token_ref:
+    #     user_token_model = UserTokenModel(uid=user.uid, token=token_str)
+    #     db.session.add(user_token_model)
+    # # 有token =》 更新过期时间
+    # else:
+    #     #todo:把这里更新修改为：删掉原本的user_token,并新添加一个用户token
+    #     user_token = user.user_token_ref
+    #     db.session.delete(user_token)
+    #     # token已过期 =》 更新token字符串
+    #     if user_token.expire_time < datetime.now():
+    #         user_token.token = token_str
+    #     else:
+    #         token_str = user_token.token
+    #     # 更新登录时间和过期时间
+    #     user_token.login_time = datetime.now()
+    #     user_token.expire_time = datetime.now() + timedelta(days=3)
     db.session.commit()
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success("SUCCEED", data=token_str)

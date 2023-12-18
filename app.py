@@ -1,6 +1,5 @@
 
 from flask import Flask
-from flask_sslify import SSLify
 import settings
 from extension import db, cors
 # 引入蓝图
@@ -12,7 +11,6 @@ from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
 # 初始化 SSLify，并强制使用 HTTPS
-sslify = SSLify(app, permanent=True)
 
 app.config.from_object(settings.MySqlConfig)
 app.config.from_object(settings.JwtConfig)

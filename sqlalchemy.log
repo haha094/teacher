@@ -1,0 +1,72 @@
+SELECT DATABASE()
+[raw sql] {}
+SELECT @@sql_mode
+[raw sql] {}
+SELECT @@lower_case_table_names
+[raw sql] {}
+BEGIN (implicit)
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE user_token.token = %(token_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00074s] {'token_1': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMjkwNzU5MCwianRpIjoiZDIxZTczZDEtNmVhYi00ZmRjLWE4YTYtNTA2NmI4ODBjMWMzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAyOTA3NTkwLCJleHAiOjE3MDMwODAzOTB9.9w7nQBxjZ57-aw7bydRHNCKiejmKuqiP9IewugMYb4s', 'param_1': 1}
+ROLLBACK
+SELECT DATABASE()
+[raw sql] {}
+SELECT @@sql_mode
+[raw sql] {}
+SELECT @@lower_case_table_names
+[raw sql] {}
+BEGIN (implicit)
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE user.uid = %(uid_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00053s] {'uid_1': '00002311', 'param_1': 1}
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE %(param_1)s = user_token.uid
+[generated in 0.00066s] {'param_1': '00002311'}
+INSERT INTO user_token (id, token, login_time, expire_time, uid) VALUES (%(id)s, %(token)s, %(login_time)s, %(expire_time)s, %(uid)s)
+[generated in 0.00066s] {'id': 'RPmRVibjCgWikLzXiXMjxw', 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMjkwOTU5MCwianRpIjoiYmJlZGM0ODUtNTVkMy00MTE3LWEyYjMtYjU3MTNmODEzMjA0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAyOTA5NTkwLCJleHAiOjE3MDMwODIzOTB9.VDuxQ38N1-xlMJ0m7U9FZb22oZulqhogbLGZTaA2cIs', 'login_time': datetime.datetime(2023, 12, 18, 22, 26, 30, 588854), 'expire_time': datetime.datetime(2023, 12, 21, 22, 25, 44, 91509), 'uid': '00002311'}
+COMMIT
+BEGIN (implicit)
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE user.uid = %(uid_1)s 
+ LIMIT %(param_1)s
+[cached since 17.66s ago] {'uid_1': '00002311', 'param_1': 1}
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE %(param_1)s = user_token.uid
+[cached since 17.67s ago] {'param_1': '00002311'}
+INSERT INTO user_token (id, token, login_time, expire_time, uid) VALUES (%(id)s, %(token)s, %(login_time)s, %(expire_time)s, %(uid)s)
+[cached since 17.67s ago] {'id': '8CYBUDaooPwgduaF5iTsP9', 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMjkwOTYwOCwianRpIjoiMzFmNzU4NzYtZTdlMC00YmU1LWFhYzAtYWNjYTI4MTJjZjY1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAyOTA5NjA4LCJleHAiOjE3MDMwODI0MDh9.0CRIX7ZD6u3scBL5SHkeeP-EdVk4hxyo_kov2iniKzc', 'login_time': datetime.datetime(2023, 12, 18, 22, 26, 48, 255309), 'expire_time': datetime.datetime(2023, 12, 21, 22, 25, 44, 91509), 'uid': '00002311'}
+DELETE FROM user_token WHERE user_token.id = %(id)s
+[generated in 0.00058s] {'id': 'RPmRVibjCgWikLzXiXMjxw'}
+COMMIT
+BEGIN (implicit)
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE user_token.token = %(token_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00055s] {'token_1': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMjkwOTYwOCwianRpIjoiMzFmNzU4NzYtZTdlMC00YmU1LWFhYzAtYWNjYTI4MTJjZjY1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAyOTA5NjA4LCJleHAiOjE3MDMwODI0MDh9.0CRIX7ZD6u3scBL5SHkeeP-EdVk4hxyo_kov2iniKzc', 'param_1': 1}
+SELECT attendance.id AS attendance_id, attendance.time AS attendance_time, attendance.work_cnt AS attendance_work_cnt, attendance.work_days AS attendance_work_days, attendance.memo AS attendance_memo, attendance.status AS attendance_status, attendance.department_id AS attendance_department_id, attendance.uid AS attendance_uid 
+FROM attendance 
+WHERE attendance.department_id = %(department_id_1)s AND attendance.time = %(time_1)s
+[generated in 0.00061s] {'department_id_1': '230', 'time_1': '2023-10'}
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE user.uid = %(uid_1)s 
+ LIMIT %(param_1)s
+[cached since 41.82s ago] {'uid_1': '00002311', 'param_1': 1}
+SELECT department.department_id AS department_department_id, department.name AS department_name 
+FROM department 
+WHERE department.department_id = %(department_id_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00194s] {'department_id_1': '230', 'param_1': 1}
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE %(param_1)s = user.department_id
+[generated in 0.00196s] {'param_1': '230'}
+ROLLBACK

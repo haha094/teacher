@@ -29,9 +29,9 @@ class MySqlConfig(object):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT,
                                                                                    DATABASE)
     SQLALCHEMY_TRACK_MODIFICATIONS = True  # 动态追踪拦截
-    # SQLALCHEMY_ECHO = True  # 日志级别：显示sql语句
-    SQLALCHEMY_ECHO = False  # 日志级别：显示sql语句
-    # SQLALCHEMY_ECHO = logging.ERROR  # 日志级别显示sql语句
+    SQLALCHEMY_ECHO = True  # 日志级别：显示sql语句
+    # SQLALCHEMY_ECHO = False  # 日志级别：显示sql语句
+    # SQLALCHEMY_ECHO = logging.DEBUG  # 日志级别显示sql语句
 
 
 # WHITE_NAME_LIST = ["/api/login","/api/regist","/api/goods/type","/api/by/tag/goods"]
@@ -137,3 +137,9 @@ class LoggingConfig:
         debug_file_handler.setLevel(cls.LOG_LEVEL_DEBUG)
         debug_file_handler.setFormatter(cls.LOG_FORMAT)
         app.logger.addHandler(debug_file_handler)
+
+        # 设置日志记录器
+        sql_handler = RotatingFileHandler('sqlalchemy.log', maxBytes=10000, backupCount=1)
+        sql_handler.setLevel(logging.INFO)
+        logging.getLogger('sqlalchemy.engine').addHandler(sql_handler)
+

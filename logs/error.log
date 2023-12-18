@@ -37,3 +37,5 @@
 2023-12-18 12:57:22 - app - ERROR - POST ERROR in /attendance/commit : 请登录后重试!
 2023-12-18 12:57:23 - app - ERROR - POST ERROR in /attendance/commit : 请登录后重试!
 2023-12-18 12:57:27 - app - ERROR - POST ERROR in /attendance/commit : 请登录后重试!
+2023-12-18 21:53:35 - app - ERROR - POST ERROR in /attendance/list : 请登录后重试!
+2023-12-18 21:55:24 - app - ERROR - POST ERROR in /attendance/list : 请登录后重试!
