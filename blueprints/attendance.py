@@ -69,7 +69,7 @@ def get_holidays():
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success(message="SUCCEED", data=result)
 
-
+# {"time": "2023-12-1", "remark": "workday"}, {"time": "2023-12-4", "remark": "workday"}, {"time": "2023-12-5", "remark": "workday"}, {"time": "2023-12-6", "remark": "workday"}, {"time": "2023-12-7", "remark": "workday"}, {"time": "2023-12-8", "remark": "workday"}, {"time": "2023-12-11", "remark": "workday"}, {"time": "2023-12-12", "remark": "workday"}, {"time": "2023-12-13", "remark": "workday"}, {"time": "2023-12-14", "remark": "workday"}, {"time": "2023-12-15", "remark": "workday"}, {"time": "2023-12-18", "remark": "workday"}, {"time": "2023-12-19", "remark": "workday"}, {"time": "2023-12-20", "remark": "workday"}, {"time": "2023-12-21", "remark": "workday"}, {"time": "2023-12-22", "remark": "workday"}, {"time": "2023-12-25", "remark": "workday"}, {"time": "2023-12-26", "remark": "workday"}, {"time": "2023-12-27", "remark": "workday"}, {"time": "2023-12-28", "remark": "workday"}, {"time": "2023-12-29", "remark": "workday"}
 @bp.post('/commit')
 @cross_origin()
 def commit_attendance():
@@ -86,16 +86,21 @@ def commit_attendance():
         return fail(msg)
     attendance_model = AttendanceModel()
     attendance_model.uid = user.uid
+    department_id = user.department_id
     param = request.get_json()
-    list = param.get('month_list')
-    '''
-    [{'time':'2023-10-21','remark':weekend},{'time':'2023-10-22','remark':'workday'},{},{},{}]
-    '''
-    # print(list)
+    month_list = param.get('month_list')
+    year = month_list[0].get('time').split('-')[0]
+    month = month_list[0].get('time').split('-')[1]
+    time = f"{year}-{month}"
+    attendance_model.time = time
+    # 若该用户已提交，此次提交不成功
+    attendance_exit = AttendanceModel.query.filter(and_(AttendanceModel.uid == user.uid, AttendanceModel.time == time)).first()
+    if attendance_exit:
+        return fail(message="您已提交该月的出勤信息")
     cnt = 0
     days = []
     memo = []
-    for day in list:
+    for day in month_list:
         if day.get('remark') == 'workday':
             cnt += 1
             days.append({'time': day.get('time'), 'remark': day.get('remark')})
@@ -104,13 +109,9 @@ def commit_attendance():
     attendance_model.work_days = json.dumps(days)
     attendance_model.memo = json.dumps(memo)
     attendance_model.work_cnt = cnt
-    # year = datetime.now().year
-    # month = datetime.now().month
-    year = list[0].get('time').split('-')[0]
-    month = list[0].get('time').split('-')[1]
-    attendance_model.time = f"{year}-{month}"
+
     attendance_model.status = True
-    attendance_model.department_id = user.department_id
+    attendance_model.department_id = department_id
     db.session.add(attendance_model)
     db.session.commit()
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")

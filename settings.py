@@ -43,49 +43,6 @@ class JwtConfig(object):
     JWT_SECRET_KEY = generate_secure_key()
 
 
-# class LoggingConfig:
-#     # 日志级别，默认为 INFO
-#     # LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
-#     LOG_LEVEL_ERR = logging.ERROR
-#     LOG_LEVEL_INFO = logging.INFO
-#     LOG_LEVEL_DEBUG = logging.DEBUG
-#
-#     # 日志文件存储目录，默认为 "logs"
-#     LOG_DIR = os.environ.get('LOG_DIR', 'logs')
-#     # 定义日志文件的完整路径
-#     LOG_FILE_ERROR = os.path.join(LOG_DIR, 'error.log')
-#     LOG_FILE_INFO = os.path.join(LOG_DIR, 'info.log')
-#     LOG_FILE_DEBUG = os.path.join(LOG_DIR, 'debug.log')
-#
-#     LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
-#     LOG_FORMAT = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=LOG_DATE_FORMAT)
-#     LOG_MAX_BYTES = 100000
-#     LOG_BACKUP_COUNT = 10
-#
-#     @classmethod
-#     def init_app(cls, app):
-#         # 添加ERROR 级别的日志处理器
-#         error_file_handler = RotatingFileHandler(cls.LOG_FILE_ERROR, maxBytes=cls.LOG_MAX_BYTES,
-#                                                  backupCount=cls.LOG_BACKUP_COUNT, encoding='utf-8')
-#         error_file_handler.setLevel(cls.LOG_LEVEL_ERR)
-#         error_file_handler.setFormatter(cls.LOG_FORMAT)
-#         app.logger.addHandler(error_file_handler)
-#
-#         # 添加 INFO 级别的日志处理器
-#         # info_file_handler = RotatingFileHandler(cls.LOG_FILE_INFO, maxBytes=cls.LOG_MAX_BYTES,
-#         #                                         backupCount=cls.LOG_BACKUP_COUNT, encoding='utf-8')
-#         # info_file_handler.setLevel(cls.LOG_LEVEL_INFO)
-#         # info_file_handler.setFormatter(cls.LOG_FORMAT)
-#         # app.logger.addHandler(info_file_handler)
-#
-#         # 添加 DEBUG 级别的日志处理器
-#         debug_file_handler = RotatingFileHandler(cls.LOG_FILE_DEBUG, maxBytes=cls.LOG_MAX_BYTES,
-#                                                  backupCount=cls.LOG_BACKUP_COUNT, encoding='utf-8')
-#         debug_file_handler.setLevel(cls.LOG_LEVEL_DEBUG)
-#         debug_file_handler.setFormatter(cls.LOG_FORMAT)
-#         app.logger.addHandler(debug_file_handler)
-
-
 class LoggingConfig:
     # 日志级别，默认为 INFO
     # LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
@@ -98,7 +55,7 @@ class LoggingConfig:
     LOG_FILE_ERROR = os.path.join(LOG_DIR, 'error.log')
     LOG_FILE_INFO = os.path.join(LOG_DIR, 'info.log')
     LOG_FILE_DEBUG = os.path.join(LOG_DIR, 'debug.log')
-    LOG_FILE_DB = os.path.join(LOG_DIR, 'database.log')
+    LOG_FILE_SQLALCHEMY = os.path.join(LOG_DIR, 'sqlalchemy.log')
 
     LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
     LOG_FORMAT = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=LOG_DATE_FORMAT)
@@ -139,7 +96,14 @@ class LoggingConfig:
         app.logger.addHandler(debug_file_handler)
 
         # 设置日志记录器
-        sql_handler = RotatingFileHandler('sqlalchemy.log', maxBytes=10000, backupCount=1)
-        sql_handler.setLevel(logging.INFO)
-        logging.getLogger('sqlalchemy.engine').addHandler(sql_handler)
+        # sql_handler = RotatingFileHandler('sqlalchemy.log', maxBytes=10000, backupCount=1)
+        # sql_handler.setLevel(logging.INFO)
+        # logging.getLogger('sqlalchemy.engine').addHandler(sql_handler)
 
+        sqlalchemy_file_handler = TimedRotatingFileHandler(cls.LOG_FILE_SQLALCHEMY, when='D', interval=1, backupCount=1440, encoding='utf-8')
+        sqlalchemy_file_handler.setLevel(cls.LOG_LEVEL_INFO)  # 设置日志级别
+        sqlalchemy_file_handler.setFormatter(cls.LOG_FORMAT)  # 设置日志格式
+
+        # 将日志处理器添加到 SQLAlchemy 的日志记录器
+        # app.logger.addHandler(sqlalchemy_file_handler)
+        logging.getLogger('sqlalchemy.engine').addHandler(sqlalchemy_file_handler)

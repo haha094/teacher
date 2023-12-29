@@ -70,3 +70,51 @@ FROM user
 WHERE %(param_1)s = user.department_id
 [generated in 0.00196s] {'param_1': '230'}
 ROLLBACK
+SELECT DATABASE()
+[raw sql] {}
+SELECT @@sql_mode
+[raw sql] {}
+SELECT @@lower_case_table_names
+[raw sql] {}
+BEGIN (implicit)
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE user.uid = %(uid_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00042s] {'uid_1': '00002311', 'param_1': 1}
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE %(param_1)s = user_token.uid
+[generated in 0.00050s] {'param_1': '00002311'}
+INSERT INTO user_token (id, token, login_time, expire_time, uid) VALUES (%(id)s, %(token)s, %(login_time)s, %(expire_time)s, %(uid)s)
+[generated in 0.00052s] {'id': '6V5Upi9XntJw5hCcWrpzmp', 'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMzgzNjExNCwianRpIjoiNzExZjRlYWItY2UyNS00ZWNkLWJiOGUtMzQyNmU1YmRlOWIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAzODM2MTE0LCJleHAiOjE3MDQwMDg5MTR9.v__NCC3hJz_7w0LOv-wKovjG6Tr6LfaCr7Oyv895Olw', 'login_time': datetime.datetime(2023, 12, 29, 15, 48, 34, 209504), 'expire_time': datetime.datetime(2024, 1, 1, 15, 47, 41, 17180), 'uid': '00002311'}
+DELETE FROM user_token WHERE user_token.id = %(id)s
+[generated in 0.00047s] {'id': 'iU4YtVttHxkof9qWpdjsut'}
+COMMIT
+BEGIN (implicit)
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE user_token.token = %(token_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00039s] {'token_1': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMzgzNjExNCwianRpIjoiNzExZjRlYWItY2UyNS00ZWNkLWJiOGUtMzQyNmU1YmRlOWIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAzODM2MTE0LCJleHAiOjE3MDQwMDg5MTR9.v__NCC3hJz_7w0LOv-wKovjG6Tr6LfaCr7Oyv895Olw', 'param_1': 1}
+SELECT user_token.id AS user_token_id, user_token.token AS user_token_token, user_token.login_time AS user_token_login_time, user_token.expire_time AS user_token_expire_time, user_token.uid AS user_token_uid 
+FROM user_token 
+WHERE user_token.token = %(token_1)s 
+ LIMIT %(param_1)s
+[cached since 0.002578s ago] {'token_1': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwMzgzNjExNCwianRpIjoiNzExZjRlYWItY2UyNS00ZWNkLWJiOGUtMzQyNmU1YmRlOWIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjAwMDAyMzExIiwibmJmIjoxNzAzODM2MTE0LCJleHAiOjE3MDQwMDg5MTR9.v__NCC3hJz_7w0LOv-wKovjG6Tr6LfaCr7Oyv895Olw', 'param_1': 1}
+SELECT user.uid AS user_uid, user.username AS user_username, user.password_hash AS user_password_hash, user.email AS user_email, user.department_id AS user_department_id 
+FROM user 
+WHERE user.uid = %(pk_1)s
+[generated in 0.00049s] {'pk_1': '00002311'}
+SELECT attendance.id AS attendance_id, attendance.time AS attendance_time, attendance.work_cnt AS attendance_work_cnt, attendance.work_days AS attendance_work_days, attendance.memo AS attendance_memo, attendance.status AS attendance_status, attendance.department_id AS attendance_department_id, attendance.uid AS attendance_uid 
+FROM attendance 
+WHERE attendance.uid = %(uid_1)s AND attendance.time = %(time_1)s 
+ LIMIT %(param_1)s
+[generated in 0.00089s] {'uid_1': '00002311', 'time_1': '2023-12', 'param_1': 1}
+INSERT INTO attendance (id, time, work_cnt, work_days, memo, status, department_id, uid) VALUES (%(id)s, %(time)s, %(work_cnt)s, %(work_days)s, %(memo)s, %(status)s, %(department_id)s, %(uid)s)
+[generated in 0.00054s] {'id': '2FUFhqqhkmkXQAMYd63Rcj', 'time': '2023-12', 'work_cnt': 5, 'work_days': '[{"time": "2023-12-7", "remark": "workday"}, {"time": "2023-12-8", "remark": "workday"}, {"time": "2023-12-9", "remark": "workday"}, {"time": "2023-12-10", "remark": "workday"}, {"time": "2023-12-11", "remark": "workday"}]', 'memo': '[{"time": "2023-12-1", "remark": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-12-2", "remark": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-12-3", "remark":  ... (140 characters truncated) ... , {"time": "2023-12-6", "remark": "\\u56fd\\u5e86\\u8282"}, {"time": "2023-12-14", "remark": "weekend"}, {"time": "2023-12-15", "remark": "weekend"}]', 'status': 1, 'department_id': '230', 'uid': '00002311'}
+COMMIT
+BEGIN (implicit)
+COMMIT
+BEGIN (implicit)
+COMMIT
