@@ -42,16 +42,16 @@ def get_holidays_abandon():
     return success(message="SUCCEED", data=result)
 
 
-@bp.get('/holidays')
+@bp.get('/holidays/<int:year>/<int:month>')
 @cross_origin()
-def get_holidays():
+def get_holidays(year, month):
     current_app.logger.info(f"{request.method} {request.path} request executed...")
     # year = datetime.now().year
     # month = datetime.now().month
 
-    param = request.get_json()
-    year = int(param.get('year'))
-    month = int(param.get('month'))
+    # param = request.get_json()
+    # year = int(param.get('year'))
+    # month = int(param.get('month'))
 
     url = "https://www.mxnzp.com/api/holiday/list/month/{}{:02d}?ignoreHoliday=false&app_id=ridopeqfimyqpyrh&app_secret=18DaFPw83fxCWE2TB9gvnCEtLRXHcQoN".format(
         year, month)
@@ -68,6 +68,7 @@ def get_holidays():
             result.append({"time": hd['date'], "remark": hd['typeDes']})
     current_app.logger.info(f"The {request.method} {request.path} request has been successfully responded.")
     return success(message="SUCCEED", data=result)
+
 
 # {"time": "2023-12-1", "remark": "workday"}, {"time": "2023-12-4", "remark": "workday"}, {"time": "2023-12-5", "remark": "workday"}, {"time": "2023-12-6", "remark": "workday"}, {"time": "2023-12-7", "remark": "workday"}, {"time": "2023-12-8", "remark": "workday"}, {"time": "2023-12-11", "remark": "workday"}, {"time": "2023-12-12", "remark": "workday"}, {"time": "2023-12-13", "remark": "workday"}, {"time": "2023-12-14", "remark": "workday"}, {"time": "2023-12-15", "remark": "workday"}, {"time": "2023-12-18", "remark": "workday"}, {"time": "2023-12-19", "remark": "workday"}, {"time": "2023-12-20", "remark": "workday"}, {"time": "2023-12-21", "remark": "workday"}, {"time": "2023-12-22", "remark": "workday"}, {"time": "2023-12-25", "remark": "workday"}, {"time": "2023-12-26", "remark": "workday"}, {"time": "2023-12-27", "remark": "workday"}, {"time": "2023-12-28", "remark": "workday"}, {"time": "2023-12-29", "remark": "workday"}
 @bp.post('/commit')
@@ -94,7 +95,8 @@ def commit_attendance():
     time = f"{year}-{month}"
     attendance_model.time = time
     # 若该用户已提交，此次提交不成功
-    attendance_exit = AttendanceModel.query.filter(and_(AttendanceModel.uid == user.uid, AttendanceModel.time == time)).first()
+    attendance_exit = AttendanceModel.query.filter(
+        and_(AttendanceModel.uid == user.uid, AttendanceModel.time == time)).first()
     if attendance_exit:
         return fail(message="您已提交该月的出勤信息")
     cnt = 0
