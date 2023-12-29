@@ -46,8 +46,12 @@ def get_holidays_abandon():
 @cross_origin()
 def get_holidays():
     current_app.logger.info(f"{request.method} {request.path} request executed...")
-    year = datetime.now().year
-    month = datetime.now().month
+    # year = datetime.now().year
+    # month = datetime.now().month
+
+    param = request.get_json()
+    year = int(param.get('year'))
+    month = int(param.get('month'))
 
     url = "https://www.mxnzp.com/api/holiday/list/month/{}{:02d}?ignoreHoliday=false&app_id=ridopeqfimyqpyrh&app_secret=18DaFPw83fxCWE2TB9gvnCEtLRXHcQoN".format(
         year, month)
